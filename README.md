@@ -43,3 +43,26 @@ Para avanzar debes seguir el material teórico junto con los videos de este curs
 Cualquier duda, nos puedes escribir a admisiones@soyhenry.com
 
 </br>
+
+
+## 🧘 App de Bienestar (meditación + rutina + journal)
+
+Se agregó una app de consola inspirada en una experiencia tipo **Endel** (ambientes sugeridos + sesión guiada corta en terminal).
+
+### Ejecutar
+
+```bash
+python app_bienestar.py
+```
+
+### Flujo recomendado
+
+1. Elige la opción **6) Iniciar sesión foco/relax (estilo Endel)**.
+2. Selecciona objetivo (`foco`, `relax` o `sueño`).
+3. Elige un ambiente sugerido.
+4. Elige un **audio de enfoque** para acompañar la sesión.
+5. Define duración y comienza sesión guiada.
+
+Los datos se guardan automáticamente en `bienestar_data.json` e incluyen el audio de enfoque elegido (nombre + link de YouTube).
+
+Audio destacado cargado por defecto: https://www.youtube.com/watch?v=ilXtdnLsZVg
