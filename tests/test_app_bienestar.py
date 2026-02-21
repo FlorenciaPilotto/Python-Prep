@@ -52,6 +52,20 @@ class TestAppBienestar(unittest.TestCase):
         self.assertEqual(resumen["minutos_foco"], 20)
         self.assertEqual(resumen["sesiones_foco"], 1)
 
+    def test_flow_eje_personaliza_primera_sesion(self):
+        prueba = self.app.resumen_prueba_gratuita()
+        self.assertEqual(prueba["dias_gratis"], 7)
+        self.assertEqual(prueba["precio_mensual_usd"], 7)
+
+        plan = self.app.crear_primera_sesion("ansiosa")
+        self.assertEqual(plan["minutos"], 3)
+        self.assertEqual(plan["voz"], "femenina")
+        self.assertEqual(plan["objetivo"], "foco")
+
+        self.app.guardar_onboarding("hola@eje.app", "ansiosa")
+        self.assertEqual(self.app.data["onboarding"]["email"], "hola@eje.app")
+        self.assertEqual(self.app.data["onboarding"]["tono"], "híbrido")
+
 
 if __name__ == "__main__":
     unittest.main()

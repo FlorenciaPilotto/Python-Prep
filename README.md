@@ -66,3 +66,23 @@ python app_bienestar.py
 Los datos se guardan automáticamente en `bienestar_data.json` e incluyen el audio de enfoque elegido (nombre + link de YouTube).
 
 Audio destacado cargado por defecto: https://www.youtube.com/watch?v=ilXtdnLsZVg
+
+
+### Nuevo: Flow EJE (UX/UI minimal oscuro)
+
+Ahora también tienes un flujo completo inspirado en EJE para activar en menos de 2 minutos una primera sesión:
+
+1. Registro (email + contraseña).
+2. Pregunta emocional clave (saturada/ansiosa/dispersa/cansada/clara pero tensa).
+3. Activación de prueba gratuita (simulada) con mensaje de 7 días gratis y USD 7/mes.
+4. Confirmación y primera sesión inmediata de 3 minutos con voz femenina.
+
+Para ejecutarlo desde la app:
+
+```bash
+python app_bienestar.py
+```
+
+Luego selecciona la opción **7) Flow EJE (prueba gratis + primera sesión)**.
+
+Decisión de tono aplicada para mercado hispanohablante: **C) Híbrido: técnica + cálida**.

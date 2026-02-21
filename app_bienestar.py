@@ -1,9 +1,9 @@
 """App de bienestar personal: meditación, rutina y journal.
 
-Incluye un "modo foco" inspirado en experiencias tipo Endel:
-- Selección de ambiente (lluvia, bosque, océano, etc.).
-- Sesión guiada por intervalos con mensajes suaves.
-- Recomendaciones de ambiente según objetivo.
+Incluye un flujo EJE inspirado en UX minimalista:
+- Prueba gratuita de 7 días.
+- Pregunta emocional para personalizar primera sesión.
+- Primera sesión inmediata orientada a foco.
 
 Los datos se guardan en JSON para mantener un historial simple.
 """
@@ -30,6 +30,16 @@ AUDIOS_ENFOQUE = [
     {"nombre": "deep focus binaural", "url": "https://www.youtube.com/results?search_query=deep+focus+binaural"},
     {"nombre": "minimal lo-fi focus", "url": "https://www.youtube.com/results?search_query=minimal+lofi+focus"},
 ]
+
+ESTADOS_MENTALES = ["saturada", "ansiosa", "dispersa", "cansada", "clara pero tensa"]
+
+SESION_POR_ESTADO = {
+    "saturada": {"titulo": "Reset Inicial", "subtitulo": "Reducir interferencia básica.", "minutos": 3},
+    "ansiosa": {"titulo": "Aterrizar", "subtitulo": "Bajar activación y recuperar eje.", "minutos": 3},
+    "dispersa": {"titulo": "Foco Núcleo", "subtitulo": "Recuperar dirección en un solo punto.", "minutos": 3},
+    "cansada": {"titulo": "Recarga Suave", "subtitulo": "Ordenar mente con baja exigencia.", "minutos": 3},
+    "clara pero tensa": {"titulo": "Precisión Calma", "subtitulo": "Sostener claridad sin presión corporal.", "minutos": 3},
+}
 
 
 @dataclass
@@ -60,7 +70,13 @@ class AppBienestar:
 
     def _load_data(self) -> dict[str, Any]:
         if not self.data_path.exists():
-            return {"meditaciones": [], "rutinas": [], "journal": [], "sesiones_foco": []}
+            return {
+                "meditaciones": [],
+                "rutinas": [],
+                "journal": [],
+                "sesiones_foco": [],
+                "onboarding": {},
+            }
 
         with self.data_path.open("r", encoding="utf-8") as file:
             payload: dict[str, Any] = json.load(file)
@@ -69,6 +85,7 @@ class AppBienestar:
         payload.setdefault("rutinas", [])
         payload.setdefault("journal", [])
         payload.setdefault("sesiones_foco", [])
+        payload.setdefault("onboarding", {})
         return payload
 
     def _save_data(self) -> None:
@@ -78,6 +95,36 @@ class AppBienestar:
     @staticmethod
     def _today() -> str:
         return datetime.now().strftime(DATE_FORMAT)
+
+    def resumen_prueba_gratuita(self) -> dict[str, str | int]:
+        return {
+            "dias_gratis": 7,
+            "precio_mensual_usd": 7,
+            "mensaje": "7 días gratis. Luego USD 7/mes. Cancelás cuando quieras.",
+        }
+
+    def obtener_estados_mentales(self) -> list[str]:
+        return ESTADOS_MENTALES.copy()
+
+    def crear_primera_sesion(self, estado_mental: str) -> dict[str, Any]:
+        estado = estado_mental.strip().lower()
+        if estado not in SESION_POR_ESTADO:
+            raise ValueError("Estado mental no soportado.")
+
+        plan = SESION_POR_ESTADO[estado].copy()
+        plan["estado_mental"] = estado
+        plan["objetivo"] = "foco"
+        plan["voz"] = "femenina"
+        return plan
+
+    def guardar_onboarding(self, email: str, estado_mental: str, tono: str = "híbrido") -> None:
+        self.data["onboarding"] = {
+            "email": email.strip().lower(),
+            "estado_mental": estado_mental.strip().lower(),
+            "tono": tono,
+            "fecha": self._today(),
+        }
+        self._save_data()
 
     def registrar_meditacion(self, minutos: int, tecnica: str, fecha: str | None = None) -> Meditacion:
         if minutos <= 0:
@@ -125,7 +172,6 @@ class AppBienestar:
         return AMBIENTES.get(objetivo.lower(), ["lluvia suave", "bosque"])
 
     def obtener_audios_enfoque(self) -> list[dict[str, str]]:
-        """Devuelve audios orientados a foco para cualquier sesión."""
         return [audio.copy() for audio in AUDIOS_ENFOQUE]
 
     def registrar_sesion_foco(
@@ -172,12 +218,6 @@ class AppBienestar:
 
 
 def ejecutar_sesion_guiada(minutos: int, ambiente: str, audio_enfoque: dict[str, str]) -> None:
-    """Simula una sesión breve con checkpoints sin esperar minutos reales.
-
-    Para no bloquear al usuario, cada bloque dura 1 segundo y representa
-    un tramo de la sesión real.
-    """
-
     bloques = min(4, max(1, minutos))
     mensajes = [
         "Respira profundo...",
@@ -196,6 +236,50 @@ def ejecutar_sesion_guiada(minutos: int, ambiente: str, audio_enfoque: dict[str,
     print("✅ Sesión finalizada. Buen trabajo.\n")
 
 
+def ejecutar_flow_eje(app: AppBienestar) -> None:
+    prueba = app.resumen_prueba_gratuita()
+    print("\n🖤 EJE · precisión, silencio, control")
+    print("Comenzar prueba gratuita")
+    print(f"{prueba['dias_gratis']} días gratis. Luego USD {prueba['precio_mensual_usd']}/mes.")
+
+    print("\nCreá tu acceso.")
+    email = input("Email: ").strip()
+    _password = input("Contraseña: ").strip()
+    print("No enviamos spam. Solo acceso a tu entrenamiento.")
+
+    print("\n¿Cómo está tu mente hoy?")
+    estados = app.obtener_estados_mentales()
+    for i, estado in enumerate(estados, start=1):
+        print(f"{i}) {estado.capitalize()}")
+    seleccion = input("Elegí una opción: ").strip() or "1"
+    try:
+        estado = estados[int(seleccion) - 1]
+    except (ValueError, IndexError):
+        estado = estados[0]
+
+    print("\nActivá tu prueba gratuita.")
+    print(prueba["mensaje"])
+    _tarjeta = input("Tarjeta (simulada): ").strip()
+    print("Te avisamos antes de que termine tu prueba.")
+
+    app.guardar_onboarding(email, estado, tono="híbrido")
+    plan = app.crear_primera_sesion(estado)
+
+    print("\nBienvenida a EJE.")
+    print("Tu mente ya empezó a bajar la interferencia.")
+    input("Enter para comenzar primera sesión...")
+
+    audios = app.obtener_audios_enfoque()
+    ambiente = app.recomendar_ambiente("foco")[0]
+    audio_enfoque = audios[0]
+    app.registrar_sesion_foco(plan["minutos"], plan["objetivo"], ambiente, audio_enfoque)
+
+    print(f"\n🎧 {plan['titulo']}")
+    print(plan["subtitulo"])
+    print("Voz: femenina")
+    ejecutar_sesion_guiada(plan["minutos"], ambiente, audio_enfoque)
+
+
 def ejecutar_app() -> None:
     app = AppBienestar()
 
@@ -207,7 +291,8 @@ def ejecutar_app() -> None:
 4) Escribir en journal
 5) Ver resumen de hoy
 6) Iniciar sesión foco/relax (estilo Endel)
-7) Salir
+7) Flow EJE (prueba gratis + primera sesión)
+8) Salir
 """
 
     while True:
@@ -274,6 +359,9 @@ def ejecutar_app() -> None:
             ejecutar_sesion_guiada(minutos, ambiente, audio_enfoque)
 
         elif opcion == "7":
+            ejecutar_flow_eje(app)
+
+        elif opcion == "8":
             print("¡Hasta pronto! 🌿")
             break
 
