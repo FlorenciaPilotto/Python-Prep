@@ -86,3 +86,25 @@ python app_bienestar.py
 Luego selecciona la opción **7) Flow EJE (prueba gratis + primera sesión)**.
 
 Decisión de tono aplicada para mercado hispanohablante: **C) Híbrido: técnica + cálida**.
+
+
+## 📱 Ejecutar en Flutter (Flow EJE)
+
+Se agregó un prototipo Flutter en `flutter_eje_app/` con el flow UX/UI completo:
+
+- Landing
+- Registro
+- Pantalla emocional
+- Pago (simulado)
+- Confirmación
+- Primera sesión
+
+### Pasos
+
+```bash
+cd flutter_eje_app
+flutter pub get
+flutter run
+```
+
+Si quieres Android Studio/VS Code, abre la carpeta `flutter_eje_app` como proyecto Flutter.
