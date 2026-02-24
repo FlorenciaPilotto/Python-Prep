@@ -43,3 +43,68 @@ Para avanzar debes seguir el material teórico junto con los videos de este curs
 Cualquier duda, nos puedes escribir a admisiones@soyhenry.com
 
 </br>
+
+
+## 🧘 App de Bienestar (meditación + rutina + journal)
+
+Se agregó una app de consola inspirada en una experiencia tipo **Endel** (ambientes sugeridos + sesión guiada corta en terminal).
+
+### Ejecutar
+
+```bash
+python app_bienestar.py
+```
+
+### Flujo recomendado
+
+1. Elige la opción **6) Iniciar sesión foco/relax (estilo Endel)**.
+2. Selecciona objetivo (`foco`, `relax` o `sueño`).
+3. Elige un ambiente sugerido.
+4. Elige un **audio de enfoque** para acompañar la sesión.
+5. Define duración y comienza sesión guiada.
+
+Los datos se guardan automáticamente en `bienestar_data.json` e incluyen el audio de enfoque elegido (nombre + link de YouTube).
+
+Audio destacado cargado por defecto: https://www.youtube.com/watch?v=ilXtdnLsZVg
+
+
+### Nuevo: Flow EJE (UX/UI minimal oscuro)
+
+Ahora también tienes un flujo completo inspirado en EJE para activar en menos de 2 minutos una primera sesión:
+
+1. Registro (email + contraseña).
+2. Pregunta emocional clave (saturada/ansiosa/dispersa/cansada/clara pero tensa).
+3. Activación de prueba gratuita (simulada) con mensaje de 7 días gratis y USD 7/mes.
+4. Confirmación y primera sesión inmediata de 3 minutos con voz femenina.
+
+Para ejecutarlo desde la app:
+
+```bash
+python app_bienestar.py
+```
+
+Luego selecciona la opción **7) Flow EJE (prueba gratis + primera sesión)**.
+
+Decisión de tono aplicada para mercado hispanohablante: **C) Híbrido: técnica + cálida**.
+
+
+## 📱 Ejecutar en Flutter (Flow EJE)
+
+Se agregó un prototipo Flutter en `flutter_eje_app/` con el flow UX/UI completo:
+
+- Landing
+- Registro
+- Pantalla emocional
+- Pago (simulado)
+- Confirmación
+- Primera sesión
+
+### Pasos
+
+```bash
+cd flutter_eje_app
+flutter pub get
+flutter run
+```
+
+Si quieres Android Studio/VS Code, abre la carpeta `flutter_eje_app` como proyecto Flutter.
